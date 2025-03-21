@@ -14,10 +14,7 @@ def is_allowed():
         if MASTER_ROLE_ID in [role.id for role in interaction.user.roles]:
             return True
         
-        # Tenta obter o nome do comando, caso esteja disponível
-        command_name = interaction.command.name if interaction.command else "comando-desconhecido"
-        
         # Levanta a exceção de verificação
-        raise CheckFailure(f"Member {interaction.user} cannot use the /{command_name} command.")
+        raise CheckFailure(f"Member {interaction.user} cannot use the /{interaction.command.name} command.")
     
     return app_commands.check(predicate)
