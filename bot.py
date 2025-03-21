@@ -54,7 +54,7 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
                 "❌ Ocorreu um erro ao executar este comando.",
                 ephemeral=True
             )
-        logging.error(f"Erro no comando: {error}", exc_info=False)
+        logging.error(f"Error in command: {error}", exc_info=False)
 
 @bot.event
 async def on_ready():
@@ -65,15 +65,15 @@ async def on_ready():
     guild = discord.Object(id=GUILD_ID)
     synced = await bot.tree.sync(guild=guild)
 
-    logging.info(f"Slash commands sincronizados: {synced}")
-    logging.info(f"Bot conectado como {bot.user}")
+    logging.info(f"Synced Slash Commands: {synced}")
+    logging.info(f"Bot connected as {bot.user}")
     print(f"Bot conectado como {bot.user}")
 
 async def shutdown():
     """Função para desligamento seguro do bot."""
-    logging.info("Encerrando o bot...")
+    logging.info("Shutting down the bot...")
     await bot.close()
-    logging.info("Bot desligado com sucesso.")
+    logging.info("Bot successfully shut down.")
 
 async def main():
     async with bot:
@@ -83,14 +83,14 @@ async def main():
                 extension = f"cogs.{filename[:-3]}"
                 try:
                     await bot.load_extension(extension)
-                    logging.info(f"Cog {extension} carregado com sucesso.")
+                    logging.info(f"Cog {extension} loaded successfully.")
                 except Exception as e:
-                    logging.error(f"Erro ao carregar {extension}: {e}")
+                    logging.error(f"Error loading {extension}: {e}")
         
         try:
             await bot.start(TOKEN)
         except Exception as e:
-            logging.error(f"Erro inesperado: {e}", exc_info=True)
+            logging.error(f"Unexpected error: {e}", exc_info=True)
         finally:
             await shutdown()
 
