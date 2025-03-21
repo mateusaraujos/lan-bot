@@ -33,6 +33,12 @@ intents.members = True
 # Criação do bot
 bot = commands.Bot(command_prefix="/", intents=intents)
 
+# on_app_command_completion é chamado automaticamente quando um comando é concluído sem erros
+@bot.event
+async def on_app_command_completion(interaction: discord.Interaction, command: discord.app_commands.Command):
+    #Registra o uso bem-sucedido do comando
+    logging.info(f"Member {interaction.user} successfully used the /{command.name} command.")
+
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
     # Se for erro de permissão, responde com a mensagem desejada
