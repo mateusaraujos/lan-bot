@@ -11,11 +11,18 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 GUILD_ID = int(os.getenv("GUILD_ID"))
 
+# Criar diretório de logs se não existir
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
 # Configurar logging
-logging.basicConfig(
-    filename='logs.txt', 
+logging.basicConfig( 
     level=logging.INFO, 
-    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s'
+    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s',
+    handlers=[
+        logging.FileHandler('logs/bot.log'), # Salvar logs no arquivo bot.log
+        logging.StreamHandler() # Mostrar logs no console
+    ]
 )
 
 # Configurar intents
@@ -67,13 +74,12 @@ async def on_ready():
 
     logging.info(f"Synced Slash Commands: {synced}")
     logging.info(f"Bot connected as {bot.user}")
-    print(f"Bot conectado como {bot.user}")
 
 async def shutdown():
     """Função para desligamento seguro do bot."""
     logging.info("Shutting down the bot...")
     await bot.close()
-    logging.info("Bot successfully shut down.")
+    logging.info(f"{bot.user} successfully shut down.")
 
 async def main():
     async with bot:
@@ -83,14 +89,14 @@ async def main():
                 extension = f"cogs.{filename[:-3]}"
                 try:
                     await bot.load_extension(extension)
-                    logging.info(f"Cog {extension} loaded successfully.")
+                    logging.info(f"Cog '{extension}' loaded successfully.")
                 except Exception as e:
                     logging.error(f"Error loading {extension}: {e}")
         
         try:
             await bot.start(TOKEN)
         except Exception as e:
-            logging.error(f"Unexpected error: {e}", exc_info=True)
+            logging.error(f"Unexpected error 'bot.start': {e}", exc_info=True)
         finally:
             await shutdown()
 
@@ -98,6 +104,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nBot encerrado manualmente.")
+        logging.info("Bot manually shut down.")
     except Exception as e:
-        print(f"\nErro inesperado: {e}")
+        logging.error(f"Unexpected error 'asyncio.run': {e}")
